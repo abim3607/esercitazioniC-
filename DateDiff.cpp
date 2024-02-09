@@ -1,11 +1,11 @@
 #include <iostream>
 #include <string> // per usare to_string()
-
+#include <cmath> // per la funzione abs() del valore assoluto
 using namespace std;
 
 int gg1, gg2, mm1, mm2, aaaa1, aaaa2;
 
-bool controllabisestille(int aaaa) {
+bool controllabisestile(int aaaa) {
 	if (aaaa % 400 == 0 || (aaaa % 4 == 0 && !(aaaa % 100 == 0))) {
 		//		cout << "l' anno e' bisitile";
 		return true;
@@ -21,23 +21,14 @@ int da_mese_a_giorni(int aaaa, int mm) {
 		/*
 		 Con piena padronanza del costrutto switch, metto il break solo quando il valore cambia.
 		*/
-	case 1:
-	case 3:
-	case 5:
-	case 7:
-	case 8:
-	case 10:
-	case 12:
+	case 1:	case 3:	case 5:	case 7:	case 8:	case 10: case 12:
 		giorni = 31;
 		break;
-	case 4:
-	case 6:
-	case 9:
-	case 11:
-		giorni = 30;
+	case 4:	case 6:	case 9:	case 11:
+	    giorni = 30;
 		break;
 	case 2:
-		if (controllabisestille(aaaa) == true) {
+		if (controllabisestile(aaaa) == true) {
 			giorni = 29;
 		}
 		else {
@@ -49,6 +40,57 @@ int da_mese_a_giorni(int aaaa, int mm) {
 	}
 	return giorni;
 }
+
+
+int giorniDaInizioAnno(int giorno, int mese, int anno){
+    int giorni = giorno;
+    for(int i=1; i<mese; ++i){
+        giorni += da_mese_a_giorni(anno, mese);
+    }
+    return giorni;
+}
+
+int differenzaTraDate(int anno1, int mese1, int giorno1, int anno2, int mese2, int giorno2) {
+    int giorniAnno1 = giorniDaInizioAnno(giorno1, mese1, anno1);
+    int giorniAnno2 = giorniDaInizioAnno(giorno2, mese2, anno2);
+
+    int giorniTrascorsiAnno1 = giorniAnno1 + (anno1 - 1) * 365 + (anno1 - 1) / 4 - (anno1 - 1) / 100 + (anno1 - 1) / 400;
+    int giorniTrascorsiAnno2 = giorniAnno2 + (anno2 - 1) * 365 + (anno2 - 1) / 4 - (anno2 - 1) / 100 + (anno2 - 1) / 400;
+    //int giorniTrascorsiAnno1 = giorniAnno1 + giorniDaInizioAnno(31, 12, anno1) * (anno1 - 1);
+    //int giorniTrascorsiAnno2 = giorniAnno2 + giorniDaInizioAnno(31, 12, anno2) * (anno2 - 1);
+
+    return abs(giorniTrascorsiAnno2 - giorniTrascorsiAnno1);
+}
+
+int differenza_tra_date(int anno1, int mese1, int giorno1, int anno2, int mese2, int giorno2) {
+    // inutile, non funziona bene questa funzione.
+	/*
+	 data più recente (più grande): anno1, mese1, giorno1   (es. 2024 05 07 )
+	 data meno recente (più piccola): anno2, mese2, giorno2 (es. 2020 03 03 )
+	*/
+	int giorni = 0;
+	for (int anno_corrente = anno2; anno_corrente < anno1; ++anno_corrente) {
+		if (controllabisestile(anno_corrente)) {
+			giorni += 366;
+		}
+		else {
+			giorni += 365;
+		}
+	}
+
+	//no va
+
+
+	//for (int mese_corrente = 1; mese_corrente < mese1; ++mese_corrente) {
+	//	giorni += (da_mese_a_giorni(anno1, mese1));
+
+	//}
+	//giorni += da_mese_a_giorni(anno2, mese2) - giorno2 + 1;
+	//giorni += giorno1 - 1;
+
+	return giorni;
+}
+
 
 int leggiAnno() {
 	int aaaa = 0;
@@ -82,33 +124,6 @@ int leggiGiorno(int anno, int mese) {
 	return gg;
 }
 
-int differenza_tra_date(int anno1, int mese1, int giorno1, int anno2, int mese2, int giorno2) {
-	/*
-	 data più recente (più grande): anno1, mese1, giorno1   (es. 2024 05 07 )
-	 data meno recente (più piccola): anno2, mese2, giorno2 (es. 2020 03 03 )
-	*/
-	int giorni = 0;
-	for (int anno_corrente = anno2; anno_corrente < anno1; ++anno_corrente) {
-		if (controllabisestille(anno_corrente)) {
-			giorni += 366;
-		}
-		else {
-			giorni += 365;
-		}
-	}
-
-	//no va
-
-
-	//for (int mese_corrente = 1; mese_corrente < mese1; ++mese_corrente) {
-	//	giorni += (da_mese_a_giorni(anno1, mese1));
-
-	//}
-	//giorni += da_mese_a_giorni(anno2, mese2) - giorno2 + 1;
-	//giorni += giorno1 - 1;
-
-	return giorni;
-}
 
 void Tester(){
 	int aaaa1,aaaa2,mm1,mm2,gg1,gg2,ris,expected;
@@ -122,37 +137,40 @@ void Tester(){
 	ris=differenza_tra_date(aaaa1, mm1, gg1, aaaa2, mm2, gg2);
 	expected=1461;
 	if(ris == expected){
-		cout << "Test1 eseguito con successo" << endl;
+		cout << "Test1 eseguito con successo: "+to_string(aaaa2)+"/"+to_string(mm2)+"/"+to_string(gg2)+" - "+to_string(aaaa1)+"/"+to_string(mm1)+"/"+to_string(gg1)+" = "+to_string(ris) << endl;
 	} else {
 		cout << "Test1 fallito: "+to_string(aaaa2)+"/"+to_string(mm2)+"/"+to_string(gg2)+" - "+to_string(aaaa1)+"/"+to_string(mm1)+"/"+to_string(gg1)+" = "+to_string(ris)+" invece di "+to_string(expected) << endl;
 	}
 	
 	aaaa1=2024; mm1=01; gg1=20;
 	aaaa2=2020;	mm2=01;	gg2=01;
-	ris=differenza_tra_date(aaaa1, mm1, gg1, aaaa2, mm2, gg2);
+	//ris=differenza_tra_date(aaaa1, mm1, gg1, aaaa2, mm2, gg2);
+	ris=differenzaTraDate(aaaa1, mm1, gg1, aaaa2, mm2, gg2);
 	expected=1480;
 	if(ris == expected){
-		cout << "Test2 eseguito con successo" << endl;
+		cout << "Test2 eseguito con successo: "+to_string(aaaa2)+"/"+to_string(mm2)+"/"+to_string(gg2)+" - "+to_string(aaaa1)+"/"+to_string(mm1)+"/"+to_string(gg1)+" = "+to_string(ris) << endl;
 	} else {
 		cout << "Test2 fallito: "+to_string(aaaa2)+"/"+to_string(mm2)+"/"+to_string(gg2)+" - "+to_string(aaaa1)+"/"+to_string(mm1)+"/"+to_string(gg1)+" = "+to_string(ris)+" invece di "+to_string(expected) << endl;
 	}
 	
 	aaaa1=2024; mm1=02; gg1=01;
 	aaaa2=2020;	mm2=01;	gg2=01;
-	ris=differenza_tra_date(aaaa1, mm1, gg1, aaaa2, mm2, gg2);
+	//ris=differenza_tra_date(aaaa1, mm1, gg1, aaaa2, mm2, gg2);
+	ris=differenzaTraDate(aaaa1, mm1, gg1, aaaa2, mm2, gg2);
 	expected=1492;
 	if(ris == expected){
-		cout << "Test3 eseguito con successo" << endl;
+		cout << "Test3 eseguito con successo: "+to_string(aaaa2)+"/"+to_string(mm2)+"/"+to_string(gg2)+" - "+to_string(aaaa1)+"/"+to_string(mm1)+"/"+to_string(gg1)+" = "+to_string(ris) << endl;
 	} else {
 		cout << "Test3 fallito: "+to_string(aaaa2)+"/"+to_string(mm2)+"/"+to_string(gg2)+" - "+to_string(aaaa1)+"/"+to_string(mm1)+"/"+to_string(gg1)+" = "+to_string(ris)+" invece di "+to_string(expected) << endl;
 	}
 
 	aaaa1=2024; mm1=03; gg1=1;
 	aaaa2=2020;	mm2=01;	gg2=1;
-	ris=differenza_tra_date(aaaa1, mm1, gg1, aaaa2, mm2, gg2);
+	//ris=differenza_tra_date(aaaa1, mm1, gg1, aaaa2, mm2, gg2);
+	ris=differenzaTraDate(aaaa1, mm1, gg1, aaaa2, mm2, gg2);
 	expected=1521;
 	if(ris == expected){
-		cout << "Test4 eseguito con successo" << endl;
+		cout << "Test4 eseguito con successo: "+to_string(aaaa2)+"/"+to_string(mm2)+"/"+to_string(gg2)+" - "+to_string(aaaa1)+"/"+to_string(mm1)+"/"+to_string(gg1)+" = "+to_string(ris) << endl;
 	} else {
 		cout << "Test4 fallito: "+to_string(aaaa2)+"/"+to_string(mm2)+"/"+to_string(gg2)+" - "+to_string(aaaa1)+"/"+to_string(mm1)+"/"+to_string(gg1)+" = "+to_string(ris)+" invece di "+to_string(expected) << endl;
 	}
@@ -160,10 +178,11 @@ void Tester(){
 	aaaa1=2024; mm1=03; gg1=31;
 	aaaa2=2024;	mm2=01;	gg2=1;
 	//ris=differenza_tra_date(aaaa1, mm1, gg1, aaaa2, mm2, gg2);
-	ris=differenza_tra_date(aaaa2, mm2, gg2, aaaa1, mm1, gg1);
+	//ris=differenza_tra_date(aaaa2, mm2, gg2, aaaa1, mm1, gg1);
+	ris=differenzaTraDate(aaaa2, mm2, gg2, aaaa1, mm1, gg1);
 	expected=90;
 	if(ris == expected){
-		cout << "Test5 eseguito con successo" << endl;
+		cout << "Test5 eseguito con successo: "+to_string(aaaa2)+"/"+to_string(mm2)+"/"+to_string(gg2)+" - "+to_string(aaaa1)+"/"+to_string(mm1)+"/"+to_string(gg1)+" = "+to_string(ris) << endl;
 	} else {
 		cout << "Test5 fallito: "+to_string(aaaa2)+"/"+to_string(mm2)+"/"+to_string(gg2)+" - "+to_string(aaaa1)+"/"+to_string(mm1)+"/"+to_string(gg1)+" = "+to_string(ris)+" invece di "+to_string(expected) << endl;
 	}
