@@ -1,0 +1,8 @@
+﻿menu.obj : error LNK2005: "float __cdecl aggiungiAcqua(void)" (?aggiungiAcqua@@YAMXZ) già definito in ComponiMenu.obj
+menu.obj : error LNK2005: "float __cdecl aggiungiCarbonara(void)" (?aggiungiCarbonara@@YAMXZ) già definito in ComponiMenu.obj
+menu.obj : error LNK2005: "float __cdecl aggiungiGrigliata(void)" (?aggiungiGrigliata@@YAMXZ) già definito in ComponiMenu.obj
+menu.obj : error LNK2005: "float __cdecl aggiungiHamburger(void)" (?aggiungiHamburger@@YAMXZ) già definito in ComponiMenu.obj
+menu.obj : error LNK2005: "float __cdecl aggiungiMargherita(void)" (?aggiungiMargherita@@YAMXZ) già definito in ComponiMenu.obj
+menu.obj : error LNK2005: "float __cdecl aggiungicocacola(void)" (?aggiungicocacola@@YAMXZ) già definito in ComponiMenu.obj
+menu.obj : error LNK2005: "float __cdecl aggiungivino(void)" (?aggiungivino@@YAMXZ) già definito in ComponiMenu.obj
+E:\menu\Debug\menu.exe : fatal error LNK1169: rilevato uno o più simboli definiti più volte
